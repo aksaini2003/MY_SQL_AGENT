@@ -130,7 +130,7 @@ Try asking something like “What are the top 10 users by sales?” instead.
 #NOTE: LLM FOR THE QUERY GENERATION
 # llm=ChatGroq(model='Llama-3.3-70b-versatile') 
 google_api_key=st.secrets['GOOGLE_API_KEY']
-llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash',api_key=google_api_key) #yeah this is working well 
+llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash-lite',api_key=google_api_key) #yeah this is working well 
 #this is better then the llama-3.3-70b-versatile
 #lets also check with the google_gemini models 
 class SQL_schema(BaseModel):
