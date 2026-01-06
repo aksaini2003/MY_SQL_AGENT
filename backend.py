@@ -209,8 +209,9 @@ def print_table_output(cursor):
 
     return df
 
-def execute(query,conn=Database_Setup()):
+def execute(query):
     # cursor=connection.cursor()]
+    conn=Database_Setup()
     cursor=conn.cursor()
     cursor.execute(query)
     output=print_table_output(cursor)
