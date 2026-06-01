@@ -135,44 +135,114 @@ Try asking something like “What are the top 10 users by sales?” instead.
 
 
 
+
+
 class SQL_schema(BaseModel):
-  
-    sql_query: str=Field(...,description='Write a SQL Query for a given problem') 
-    
+    sql_query: str = Field(
+        ...,
+        description="Generate a valid MySQL SELECT query only."
+    )
 
 
 row_limit = 50
 
-schema_snippet = """table: super_store (Row ID, Order ID, Order Date, Ship Date, Ship Mode, Customer ID, Customer Name, 
-                Segment, Country/Region, City, State, Postal Code, Region, Product ID, Category, Sub-Category, 
-                Product Name,Sales, Quantity, Discount, Profit"""
 
+schema_snippet = """
+Table: super_store
 
-# business_glossary = '{"active_customer": "users.last_active > now() - interval \'30 days\'"}'
+Columns:
+
+`Row ID`
+`Order ID`
+`Order Date`
+`Ship Date`
+`Ship Mode`
+`Customer ID`
+`Customer Name`
+`Segment`
+`Country/Region`
+`City`
+`State`
+`Postal Code`
+`Region`
+`Product ID`
+`Category`
+`Sub-Category`
+`Product Name`
+`Sales`
+`Quantity`
+`Discount`
+`Profit`
+"""
+
 
 prompt = PromptTemplate.from_template("""
-You are a SQL generator for a MYSQL database. Use the schema information below to write a single SQL query that answers the user's request. Do not modify data. Apply sensible defaults for ambiguous items, and ask follow-up question only if absolutely necessary.
+You are an expert MySQL query generator.
 
-Schema snippet:
+Your task is to convert the user's request into a valid MySQL SELECT query.
+
+Schema:
 {schema_snippet}
 
+User Request:
+{query}
 
-User request: {query}
+IMPORTANT RULES:
 
-Constraints:
-- Use only SELECT queries. No DML or DDL.
-- Limit returned rows to {row_limit} unless user asks for full export.
-- You can't run any deletion query
+1. Use ONLY the table `super_store`.
 
+2. This is a MySQL database.
 
-Provide:
-1. A single SQL query.
+3. If a column name contains spaces, hyphens (-), or slashes (/),
+   ALWAYS wrap the column name in backticks.
 
+Examples:
+`Customer Name`
+`Order ID`
+`Product Name`
+`Sub-Category`
+`Country/Region`
+
+4. Generate ONLY SELECT queries.
+
+5. Never generate:
+   - DELETE
+   - UPDATE
+   - INSERT
+   - DROP
+   - ALTER
+   - TRUNCATE
+
+6. Use proper GROUP BY clauses whenever aggregation functions
+   such as SUM(), COUNT(), AVG(), MIN(), MAX() are used.
+
+7. Always generate syntactically correct MySQL.
+
+8. Limit results to {row_limit} rows unless the user explicitly asks for all rows.
+
+9. Return ONLY the SQL query.
+
+Example:
+
+Question:
+Top 10 customers by sales
+
+SQL:
+SELECT
+    `Customer Name`,
+    SUM(`Sales`) AS total_sales
+FROM super_store
+GROUP BY `Customer Name`
+ORDER BY total_sales DESC
+LIMIT 10;
+
+Generate the SQL query now.
 """)
-sql_llm=llm.with_structured_output(SQL_schema)
 
-chain=prompt|sql_llm 
 
+sql_llm = llm.with_structured_output(SQL_schema)
+
+chain = prompt | sql_llm
 
 
 
