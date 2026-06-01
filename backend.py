@@ -23,14 +23,17 @@ class Graph_Schema(TypedDict):
     error: str
     safety_msg:str  
 
-load_dotenv()
 
 
 
 
+
+    
+avn_password=st.secrets['AVN_PASSWORD']
 #NOTE: llm for the initial checkup of user's statement
 groq_api_key=st.secrets['GROQ_API_KEY']
                         #replace with your groq api key
+
 llm2=ChatGroq(model='Llama-3.3-70b-versatile',api_key=groq_api_key)
 #NOTE: LLM FOR THE QUERY GENERATION
 # llm=ChatGroq(model='Llama-3.3-70b-versatile') 
@@ -58,11 +61,10 @@ Classification of the user's input:
     )
 
 
-validation_llm=llm2.with_structured_output(Initial_check_schema)
 
 def Initial_Check(state: Graph_Schema)->Literal['get_query','not_valid','contain_modification']:
     user_input=state['user_statement']
-    validation_llm=llm.with_structured_output(Initial_check_schema)
+    validation_llm=llm2.with_structured_output(Initial_check_schema)
     prompt = f"""
 You are a **SQL Safety Checker**.
 
@@ -174,8 +176,6 @@ chain=prompt|sql_llm
 
 
 
-    
-avn_password=st.secrets['AVN_PASSWORD']
 
 #DataBase Connection
 # NOTE: Function for the Database setup_database
