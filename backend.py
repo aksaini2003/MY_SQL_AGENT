@@ -33,14 +33,13 @@ avn_password=st.secrets['AVN_PASSWORD']
 #NOTE: llm for the initial checkup of user's statement
 groq_api_key=st.secrets['GROQ_API_KEY']
                         #replace with your groq api key
-
+groq_api_key2=st.secrets['GROQ_API_KEY2']
 llm2=ChatGroq(model='Llama-3.3-70b-versatile',api_key=groq_api_key)
 #NOTE: LLM FOR THE QUERY GENERATION
 # llm=ChatGroq(model='Llama-3.3-70b-versatile') 
-google_api_key=st.secrets['GOOGLE_API_KEY']
-llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash',google_api_key=google_api_key) #yeah this is working well 
-#this is better then the llama-3.3-70b-versatile
-#lets also check with the google_gemini models 
+# google_api_key=st.secrets['GOOGLE_API_KEY']
+# llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash',google_api_key=google_api_key) #yeah this is working well 
+llm=ChatGroq(model='Llama-3.3-70b-versatile',api_key=groq_api_key2)
 #CODE FOR INITIAL CHECKUP
 class Initial_check_schema(BaseModel): 
     validation: Literal['Safe', 'Irrelevant', 'Modification'] = Field(
