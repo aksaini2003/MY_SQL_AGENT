@@ -78,9 +78,9 @@ if st.button("🚀 Run Query"):
                 else:
             
                     st.warning("⚠️ No results found.")
-            except: 
-                st.info('Sorry, but i am not able to understand your Statement, please provide an understandable statement')
-            
+           
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
             
             
     else:
